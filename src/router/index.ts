@@ -6,7 +6,7 @@ const router = createRouter({
   history: createWebHistory(),
   routes: [
     {
-      path: "/Write-On-Time/",
+      path: "/",
       name: "home",
       component: indexVue,
       meta: {
