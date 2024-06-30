@@ -40,12 +40,12 @@ jobs:
       - name: Build
         run: npm run build
         env:
-          VITE_GOOGLE_SHEET_ID: ${{ secrets.VITE_GOOGLE_SHEET_ID }}
-          VITE_GOOGLE_TAB_ID: ${{ secrets.VITE_GOOGLE_TAB_ID }}
-          VITE_GOOGLE_APPROX_SHEET_ID: ${{ secrets.VITE_GOOGLE_APPROX_SHEET_ID }}
-          VITE_GOOGLE_APPROX_TAB_ID: ${{ secrets.VITE_GOOGLE_APPROX_TAB_ID }}
-          VITE_GUTENBERG_SHEET_ID: ${{ secrets.VITE_GUTENBERG_SHEET_ID }}
-          VITE_GUTENBERG_TAB_ID: ${{ secrets.VITE_GUTENBERG_TAB_ID }}
+          VITE_GOOGLE_SHEET_ID: ${{ vars.VITE_GOOGLE_SHEET_ID }}
+          VITE_GOOGLE_TAB_ID: ${{ vars.VITE_GOOGLE_TAB_ID }}
+          VITE_GOOGLE_APPROX_SHEET_ID: ${{ vars.VITE_GOOGLE_APPROX_SHEET_ID }}
+          VITE_GOOGLE_APPROX_TAB_ID: ${{ vars.VITE_GOOGLE_APPROX_TAB_ID }}
+          VITE_GUTENBERG_SHEET_ID: ${{ vars.VITE_GUTENBERG_SHEET_ID }}
+          VITE_GUTENBERG_TAB_ID: ${{ vars.VITE_GUTENBERG_TAB_ID }}
           NODE_ENV: production
 
       - name: Setup Pages
