@@ -7,7 +7,7 @@ export default ({ mode }: any) => {
     process.env = {...process.env, ...loadEnv(mode, process.cwd())};
 
     return defineConfig({
-    //   base: "/Thoughtful/",
+      base: "/Write-On-Time/",
     
       plugins: [vue()],
       resolve: {
