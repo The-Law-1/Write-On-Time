@@ -27,16 +27,23 @@ onMounted(async () => {
     // convert to 12 hour format
     let hours = date.getHours();
 
+    const meridium = hours >= 12 ? 'PM' : 'AM';
 
     if (hours === 0)
-      return `00:${minutes < 10 ? '0' + minutes : minutes}`;
+      return {
+        currentTime: `00:${minutes < 10 ? '0' + minutes : minutes}`,
+        meridium
+      };
     else
       hours = hours % 12 || 12;
-      return `${hours < 10 ? '0' + hours : hours}:${minutes < 10 ? '0' + minutes : minutes}`;
+      return {
+        currentTime: `${hours < 10 ? '0' + hours : hours}:${minutes < 10 ? '0' + minutes : minutes}`,
+        meridium
+      }
   };
-  const currentTime = getTime();
+  const {currentTime, meridium} = getTime();
   console.log("Current time: ", currentTime)
-  clockInfo.value = await fetchCurrentTime(currentTime);
+  clockInfo.value = await fetchCurrentTime(currentTime, meridium);
 });
 
 </script>

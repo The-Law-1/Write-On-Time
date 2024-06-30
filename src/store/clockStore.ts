@@ -40,7 +40,7 @@ async function fetchTimeFromSheet(timeStr: string, sheetID: string, tabID: strin
   let query = `select * where A = '${timeStr}'`;
 
   if (meridium) {
-    query += ` and G = '${meridium}'`
+    query += ` and (G = 'any' or G = '${meridium}')`
   }
   if (approximation) {
     query += ` and (H = 'any' or H = '${approximation}')`
@@ -78,7 +78,7 @@ async function fetchTimeFromSheet(timeStr: string, sheetID: string, tabID: strin
 }
 
 // time string in the format hh:mm
-export async function fetchCurrentTime(timeStr: string) : Promise<ClockInfo> {
+export async function fetchCurrentTime(timeStr: string, meridium: string) : Promise<ClockInfo> {
 
   let rows = [];
   const splitTime = timeStr.split(":");
@@ -87,10 +87,10 @@ export async function fetchCurrentTime(timeStr: string) : Promise<ClockInfo> {
   // if the minutes is 00, 15, 30, 45, then we can fetch gutenberg
   if (minutes % 15 === 0) {
     console.log("Querying Gutenberg");
-    rows = await fetchTimeFromSheet(timeStr, import.meta.env.VITE_GUTENBERG_SHEET_ID, import.meta.env.VITE_GUTENBERG_TAB_ID ?? 0);
+    rows = await fetchTimeFromSheet(timeStr, import.meta.env.VITE_GUTENBERG_SHEET_ID, import.meta.env.VITE_GUTENBERG_TAB_ID ?? 0, meridium);
   } else {
     console.log("Querying google books");
-    rows = await fetchTimeFromSheet(timeStr, import.meta.env.VITE_GOOGLE_SHEET_ID, import.meta.env.VITE_GOOGLE_TAB_ID ?? 0);
+    rows = await fetchTimeFromSheet(timeStr, import.meta.env.VITE_GOOGLE_SHEET_ID, import.meta.env.VITE_GOOGLE_TAB_ID ?? 0, meridium);
   }
 
   if (rows.length === 0) {
@@ -116,7 +116,7 @@ export async function fetchCurrentTime(timeStr: string) : Promise<ClockInfo> {
     timeStr = `${hourString}:${roundedMinutes.toString().padStart(2, "0")}`;
     console.log("Looking for approximated time: ", timeStr)
     // * determine if we are just before or just after that time
-    rows = await fetchTimeFromSheet(timeStr, import.meta.env.VITE_GOOGLE_APPROX_SHEET_ID, import.meta.env.VITE_GOOGLE_APPROX_TAB_ID, null, approximation);
+    rows = await fetchTimeFromSheet(timeStr, import.meta.env.VITE_GOOGLE_APPROX_SHEET_ID, import.meta.env.VITE_GOOGLE_APPROX_TAB_ID, meridium, approximation);
   }
 
   // select a random row
