@@ -1,10 +1,10 @@
 <template>
 
-    <div class=" flex justify-center">
+    <div class=" flex justify-center items-center h-2/3">
       <div v-if="clockInfo" class=" w-2/3">
 
         <!-- MAIN SNIPPET -->
-        <div>
+        <div class=" text-4xl">
           {{ splitSnippet[0] }}
           <span class=" font-bold">
             {{ splitSnippet[1] }}
@@ -15,11 +15,11 @@
         <!-- TITLE + AUTHOR -->
         <div class=" w-full text-end ">
           <a :href="clockInfo.preview" target="_blank" class=" text-xs">
-            <span class=" text-xs italic">
+            <span class=" text-base italic">
               {{ clockInfo.title }}
             </span>
             <br>
-            <span class=" text-xs">
+            <span class=" text-base">
               {{ clockInfo.author }}
             </span>
           </a>
@@ -58,13 +58,15 @@ watch(clockInfo, (newVal) => {
     }
 
     try {
-      if (newVal.sentence.startsWith(newVal.expression)) {
+      const lowerCaseSentence = newVal.sentence.toLowerCase();
+      const lowerCaseExpression = newVal.expression.toLowerCase();
+      if (lowerCaseSentence.startsWith(lowerCaseExpression)) {
         splitSnippet.value.push(newVal.expression);
         splitSnippet.value.push(newVal.sentence.slice(newVal.expression.length));
         return;
       }
 
-      if (newVal.sentence.endsWith(newVal.expression)) {
+      if (lowerCaseSentence.endsWith(lowerCaseExpression)) {
         splitSnippet.value.push(newVal.sentence.slice(0, newVal.sentence.length - newVal.expression.length));
         splitSnippet.value.push(newVal.expression);
         return;
@@ -114,8 +116,8 @@ const getTime = () => {
 const fetchClockInfo = async () => {
   const {currentTime, meridium} = getTime();
 
-  clockInfo.value = await fetchCurrentTime("05:45", "PM");
-  // clockInfo.value = await fetchCurrentTime(currentTime, meridium);
+  // clockInfo.value = await fetchCurrentTime("05:45", "PM");
+  clockInfo.value = await fetchCurrentTime(currentTime, meridium);
 };
 
 let initialTimeoutId: NodeJS.Timeout = null;
