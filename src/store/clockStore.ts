@@ -1,3 +1,5 @@
+import { ClockInfo } from "@/types/ClockInfo";
+
 // time string in the format hh:mm
 export async function fetchGoogleTime(timeStr: string) {
   const spreadsheetId = import.meta.env.VITE_GOOGLE_SHEET_ID; // Replace with your spreadsheet ID
@@ -76,7 +78,7 @@ async function fetchTimeFromSheet(timeStr: string, sheetID: string, tabID: strin
 }
 
 // time string in the format hh:mm
-export async function fetchCurrentTime(timeStr: string) {
+export async function fetchCurrentTime(timeStr: string) : Promise<ClockInfo> {
 
   let rows = [];
   const splitTime = timeStr.split(":");
@@ -119,6 +121,26 @@ export async function fetchCurrentTime(timeStr: string) {
 
   // select a random row
  
-  console.log("rows", rows);
+  const randomRow = rows[Math.floor(Math.random() * rows.length)];
+  
+  console.log("Randomrow: ", randomRow);
 
+  /**
+   * * rows: An array containing the rows of data.
+   *  * Each row has an array c of cell objects.
+   *   * Each cell object has:
+   *    * v: The value of the cell.
+   *    * f: The formatted value of the cell (optional, here only used for the age column).
+   */
+
+  const resultObj : ClockInfo = {
+    realtime: randomRow["c"][0]["v"],
+    sentence: randomRow["c"][1]["v"],
+    title: randomRow["c"][2]["v"],
+    preview: randomRow["c"][3]["v"],
+    author: randomRow["c"][4]["v"],
+    expression: randomRow["c"][5]["v"]
+  }
+
+  return resultObj;
 }

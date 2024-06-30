@@ -1,12 +1,20 @@
 <template>
     <div class=" text-3xl">
-        Title
+      Title
+    </div>
+
+    <div 
+      v-if="clockInfo">
+      {{ clockInfo.sentence }}
     </div>
 </template>
 
 <script setup lang="ts">
 import { fetchCurrentTime } from '@/store/clockStore';
-import { onMounted } from 'vue';
+import { ClockInfo } from '@/types/ClockInfo';
+import { onMounted, ref } from 'vue';
+
+const clockInfo = ref<ClockInfo | null>(null);
 
 onMounted(async () => {
 
@@ -28,7 +36,7 @@ onMounted(async () => {
   };
   const currentTime = getTime();
   console.log("Current time: ", currentTime)
-  await fetchCurrentTime("02:56");
+  clockInfo.value = await fetchCurrentTime(currentTime);
 });
 
 </script>
