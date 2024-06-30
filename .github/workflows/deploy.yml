@@ -46,6 +46,7 @@ jobs:
           VITE_GOOGLE_APPROX_TAB_ID: ${{ secrets.VITE_GOOGLE_APPROX_TAB_ID }}
           VITE_GUTENBERG_SHEET_ID: ${{ secrets.VITE_GUTENBERG_SHEET_ID }}
           VITE_GUTENBERG_TAB_ID: ${{ secrets.VITE_GUTENBERG_TAB_ID }}
+          NODE_ENV: production
 
       - name: Setup Pages
         uses: actions/configure-pages@v4
