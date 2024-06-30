@@ -1,9 +1,9 @@
-import { createRouter, createWebHistory } from "vue-router";
+import { createRouter, createWebHashHistory, createWebHistory } from "vue-router";
 import indexVue from "@/pages/index.vue";
 import defaultLayout from "@/layouts/default.vue";
 
 const router = createRouter({
-  history: createWebHistory(),
+  history: createWebHashHistory("/Write-On-Time/"),
   routes: [
     {
       path: "/",
