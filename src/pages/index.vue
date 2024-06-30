@@ -5,16 +5,53 @@
 
     <div 
       v-if="clockInfo">
-      {{ clockInfo.sentence }}
+      {{ splitSnippet[0] }}
+      <span class=" font-bold">
+        {{ splitSnippet[1] }}
+      </span>
+      {{ splitSnippet[2] }}
     </div>
 </template>
 
 <script setup lang="ts">
 import { fetchCurrentTime } from '@/store/clockStore';
 import { ClockInfo } from '@/types/ClockInfo';
-import { onMounted, ref } from 'vue';
+import { onMounted, ref, watch } from 'vue';
 
 const clockInfo = ref<ClockInfo | null>(null);
+const splitSnippet = ref<string[]>([]);
+
+watch(clockInfo, (newVal) => {
+  if (newVal) {
+    splitSnippet.value = [];
+
+    try {
+      if (newVal.sentence.startsWith(newVal.expression)) {
+        splitSnippet.value.push(newVal.expression);
+        splitSnippet.value.push(newVal.sentence.slice(newVal.expression.length));
+        return;
+      }
+
+      if (newVal.sentence.endsWith(newVal.expression)) {
+        splitSnippet.value.push(newVal.sentence.slice(0, newVal.sentence.length - newVal.expression.length));
+        splitSnippet.value.push(newVal.expression);
+        return;
+      }
+
+      const splitSentence = newVal.sentence.split(newVal.expression);
+
+      if (splitSentence.length !== 2)
+        throw new Error('Invalid sentence');
+
+      splitSnippet.value.push(splitSentence[0]);
+      splitSnippet.value.push(newVal.expression);
+      splitSnippet.value.push(splitSentence[1]);
+    } catch (error) {
+      console.warn('Invalid sentence');
+    }
+
+  }
+});
 
 onMounted(async () => {
 
