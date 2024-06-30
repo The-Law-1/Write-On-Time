@@ -137,9 +137,10 @@ export async function fetchCurrentTime(timeStr: string, meridium: string) : Prom
     realtime: randomRow["c"][0]["v"],
     sentence: randomRow["c"][1]["v"],
     title: randomRow["c"][2]["v"],
-    preview: randomRow["c"][3]["v"],
+    preview: randomRow["c"][3] ? randomRow["c"][3]["v"] : "",
     author: randomRow["c"][4]["v"],
-    expression: randomRow["c"][5]["v"]
+    expression: randomRow["c"][5]["v"],
+    bookNumber: randomRow["c"].length === 8 ? randomRow["c"][7]["v"] : null,
   }
 
   return resultObj;

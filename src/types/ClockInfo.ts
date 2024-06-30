@@ -4,5 +4,6 @@ export interface ClockInfo {
   title: string,
   preview: string,
   author: string,
-  expression: string
+  expression: string,
+  bookNumber: number | null
 }

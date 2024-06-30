@@ -1,22 +1,46 @@
 <template>
-    <div class=" text-3xl">
-      Title
-    </div>
 
-    <div 
-      v-if="clockInfo">
-      {{ splitSnippet[0] }}
-      <span class=" font-bold">
-        {{ splitSnippet[1] }}
-      </span>
-      {{ splitSnippet[2] }}
+    <div class=" flex justify-center">
+      <div v-if="clockInfo" class=" w-2/3">
+
+        <!-- MAIN SNIPPET -->
+        <div>
+          {{ splitSnippet[0] }}
+          <span class=" font-bold">
+            {{ splitSnippet[1] }}
+          </span>
+          {{ splitSnippet[2] }}
+        </div>
+
+        <!-- TITLE + AUTHOR -->
+        <div class=" w-full text-end ">
+          <a :href="clockInfo.preview" target="_blank" class=" text-xs">
+            <span class=" text-xs italic">
+              {{ clockInfo.title }}
+            </span>
+            <br>
+            <span class=" text-xs">
+              {{ clockInfo.author }}
+            </span>
+          </a>
+        </div>
+      </div>
+    </div>
+    <div>
+      <button
+        @click="(e) => {
+          e.preventDefault();
+          fetchClockInfo();
+        }">
+        Refresh
+      </button>
     </div>
 </template>
 
 <script setup lang="ts">
 import { fetchCurrentTime } from '@/store/clockStore';
 import { ClockInfo } from '@/types/ClockInfo';
-import { onMounted, ref, watch } from 'vue';
+import { onMounted, onUnmounted, ref, watch } from 'vue';
 
 const clockInfo = ref<ClockInfo | null>(null);
 const splitSnippet = ref<string[]>([]);
@@ -24,6 +48,14 @@ const splitSnippet = ref<string[]>([]);
 watch(clockInfo, (newVal) => {
   if (newVal) {
     splitSnippet.value = [];
+
+    // if preview is empty or null, it's a gutenberg book and you have to build it
+    if (!newVal.preview) {
+      const bookNumber = newVal.bookNumber;
+      const gutenbergLink = `https://www.gutenberg.org/ebooks/${bookNumber}`
+
+      clockInfo.value.preview = gutenbergLink;
+    }
 
     try {
       if (newVal.sentence.startsWith(newVal.expression)) {
@@ -53,34 +85,63 @@ watch(clockInfo, (newVal) => {
   }
 });
 
+const getTime = () => {
+  const date = new Date();
+
+  // const hours = date.getHours();
+  let minutes = date.getMinutes();
+
+  // convert to 12 hour format
+  let hours = date.getHours();
+
+  const meridium = hours >= 12 ? 'PM' : 'AM';
+
+  if (hours === 0) {
+    return {
+      currentTime: `00:${minutes < 10 ? '0' + minutes : minutes}`,
+      meridium
+    };
+  }
+  else {
+    hours = hours % 12 || 12;
+    return {
+      currentTime: `${hours < 10 ? '0' + hours : hours}:${minutes < 10 ? '0' + minutes : minutes}`,
+      meridium
+    }
+  }
+};
+
+const fetchClockInfo = async () => {
+  const {currentTime, meridium} = getTime();
+
+  clockInfo.value = await fetchCurrentTime("05:45", "PM");
+  // clockInfo.value = await fetchCurrentTime(currentTime, meridium);
+};
+
+let initialTimeoutId: NodeJS.Timeout = null;
+let intervalId: NodeJS.Timeout = null;
+
 onMounted(async () => {
 
-  const getTime = () => {
-    const date = new Date();
+  // * run for the current time
+  await fetchClockInfo();
 
-    // const hours = date.getHours();
-    let minutes = date.getMinutes();
+  // Calculate the delay until the next minute
+  // const now = new Date();
+  // const delayUntilNextMinute = (60 - now.getSeconds()) * 1000 - now.getMilliseconds();
 
-    // convert to 12 hour format
-    let hours = date.getHours();
+  // // Wait until the start of the next minute to align the interval with real-time minutes
+  // initialTimeoutId = setTimeout(() => {
+  //   fetchClockInfo(); // Call it once at the start of the next minute
+  //   // Then set an interval to call it every 60 seconds
+  //   intervalId = setInterval(fetchClockInfo, 60 * 1000);
+  // }, delayUntilNextMinute);
 
-    const meridium = hours >= 12 ? 'PM' : 'AM';
-
-    if (hours === 0)
-      return {
-        currentTime: `00:${minutes < 10 ? '0' + minutes : minutes}`,
-        meridium
-      };
-    else
-      hours = hours % 12 || 12;
-      return {
-        currentTime: `${hours < 10 ? '0' + hours : hours}:${minutes < 10 ? '0' + minutes : minutes}`,
-        meridium
-      }
-  };
-  const {currentTime, meridium} = getTime();
-  console.log("Current time: ", currentTime)
-  clockInfo.value = await fetchCurrentTime(currentTime, meridium);
+});
+// Cleanup on component unmount
+onUnmounted(() => {
+  clearTimeout(initialTimeoutId);
+  clearInterval(intervalId);
 });
 
 </script>
