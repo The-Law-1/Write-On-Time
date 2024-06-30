@@ -3,7 +3,7 @@ import indexVue from "@/pages/index.vue";
 import defaultLayout from "@/layouts/default.vue";
 
 const router = createRouter({
-  history: createWebHashHistory("/Write-On-Time/"),
+  history: createWebHashHistory(),
   routes: [
     {
       path: "/",
