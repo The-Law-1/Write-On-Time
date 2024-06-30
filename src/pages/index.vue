@@ -38,7 +38,7 @@
 
         <div class=" w-full flex justify-center pt-5">
           <button title="Refresh"
-            @click="(e) => {
+            @click="(e: MouseEvent) => {
               e.preventDefault();
               if (refreshLoading) return;
               fetchClockInfo();
@@ -75,7 +75,7 @@ watch(clockInfo, (newVal) => {
       const bookNumber = newVal.bookNumber;
       const gutenbergLink = `https://www.gutenberg.org/ebooks/${bookNumber}`
 
-      clockInfo.value.preview = gutenbergLink;
+      clockInfo.value!.preview = gutenbergLink;
     }
 
     try {
@@ -163,8 +163,8 @@ const fetchClockInfo = async () => {
 
 };
 
-let initialTimeoutId: NodeJS.Timeout = null;
-let intervalId: NodeJS.Timeout = null;
+let initialTimeoutId: (NodeJS.Timeout | null) = null;
+let intervalId: (NodeJS.Timeout | null) = null;
 
 onMounted(async () => {
 
@@ -185,8 +185,10 @@ onMounted(async () => {
 });
 // Cleanup on component unmount
 onUnmounted(() => {
-  clearTimeout(initialTimeoutId);
-  clearInterval(intervalId);
+  if (initialTimeoutId)
+    clearTimeout(initialTimeoutId);
+  if (intervalId)
+    clearInterval(intervalId);
 });
 
 </script>
