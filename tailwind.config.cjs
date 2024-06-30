@@ -19,8 +19,8 @@ module.exports = {
         
           // that is animation class
           animation: {
-              fade_in: 'fadeIn 2s ease-in-out',
-              fade_out: 'fadeOut 2s ease-in-out',
+              fade_in: 'fadeIn 0.2s ease-in-out',
+              fade_out: 'fadeOut 0.2s ease-in-out',
           },
           // that is actual animation
           keyframes: theme => ({
