@@ -1,19 +1,25 @@
 <template>
+  <div class=" h-full bg-paper">
 
     <div class=" flex justify-center items-center h-2/3">
       <div v-if="clockInfo" class=" w-2/3">
 
         <!-- MAIN SNIPPET -->
         <div class=" text-4xl">
-          {{ splitSnippet[0] }}
-          <span class=" font-bold">
+          <span v-show="splitSnippet[0].length > 0">
+            {{ splitSnippet[0] }}
+          </span>
+
+          <span class="font-bold">
             {{ splitSnippet[1] }}
           </span>
-          {{ splitSnippet[2] }}
+          <span v-if="splitSnippet.length > 2">
+            {{ splitSnippet[2] }}
+          </span>
         </div>
 
         <!-- TITLE + AUTHOR -->
-        <div class=" w-full text-end ">
+        <div class=" w-full text-end pt-2 ">
           <a :href="clockInfo.preview" target="_blank" class=" text-xs">
             <span class=" text-base italic">
               {{ clockInfo.title }}
@@ -35,6 +41,8 @@
         Refresh
       </button>
     </div>
+  </div>
+
 </template>
 
 <script setup lang="ts">
@@ -58,28 +66,42 @@ watch(clockInfo, (newVal) => {
     }
 
     try {
-      const lowerCaseSentence = newVal.sentence.toLowerCase();
-      const lowerCaseExpression = newVal.expression.toLowerCase();
+      const sentenceCopy = newVal.sentence;
+      const expressionCopy = newVal.expression;
+      const lowerCaseSentence = sentenceCopy.toLowerCase();
+      const lowerCaseExpression = expressionCopy.toLowerCase();
       if (lowerCaseSentence.startsWith(lowerCaseExpression)) {
+        splitSnippet.value.push("");
         splitSnippet.value.push(newVal.expression);
         splitSnippet.value.push(newVal.sentence.slice(newVal.expression.length));
-        return;
-      }
-
-      if (lowerCaseSentence.endsWith(lowerCaseExpression)) {
+      } else if (lowerCaseSentence.endsWith(lowerCaseExpression)) {
+        splitSnippet.value.push("");
         splitSnippet.value.push(newVal.sentence.slice(0, newVal.sentence.length - newVal.expression.length));
         splitSnippet.value.push(newVal.expression);
-        return;
+      } else {
+
+        
+        const splitSentence = newVal.sentence.split(newVal.expression);
+        
+        if (splitSentence.length !== 2)
+          throw new Error('Invalid sentence');
+        
+        splitSnippet.value.push(splitSentence[0]);
+        splitSnippet.value.push(newVal.expression);
+        splitSnippet.value.push(splitSentence[1]);
       }
 
-      const splitSentence = newVal.sentence.split(newVal.expression);
+      // first letter of final snippet
+      const firstLetter = splitSnippet.value[2].trim().charAt(0);
+      // if firstletter is alphabetical, add a space
+      if (firstLetter.match(/[a-z]/i)) {
+        splitSnippet.value[2] = ` ${splitSnippet.value[2]}`;
+      }
+      if (splitSnippet.value[0].length > 0) {
+        splitSnippet.value[0] = `${splitSnippet.value[0]} `;
+      }
 
-      if (splitSentence.length !== 2)
-        throw new Error('Invalid sentence');
 
-      splitSnippet.value.push(splitSentence[0]);
-      splitSnippet.value.push(newVal.expression);
-      splitSnippet.value.push(splitSentence[1]);
     } catch (error) {
       console.warn('Invalid sentence');
     }
@@ -116,8 +138,8 @@ const getTime = () => {
 const fetchClockInfo = async () => {
   const {currentTime, meridium} = getTime();
 
-  // clockInfo.value = await fetchCurrentTime("05:45", "PM");
-  clockInfo.value = await fetchCurrentTime(currentTime, meridium);
+  clockInfo.value = await fetchCurrentTime("05:45", "PM");
+  // clockInfo.value = await fetchCurrentTime(currentTime, meridium);
 };
 
 let initialTimeoutId: NodeJS.Timeout = null;
