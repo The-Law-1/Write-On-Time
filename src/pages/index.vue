@@ -117,8 +117,8 @@ watch(clockInfo, (newVal) => {
 
     } catch (error) {
       splitSnippet.value = ["", "", ""];
+      console.warn('Invalid sentence: ', newVal.sentence);
       fetchClockInfo();
-      console.warn('Invalid sentence');
     }
 
   }
