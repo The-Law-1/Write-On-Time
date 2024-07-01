@@ -48,7 +48,6 @@ async function fetchTimeFromSheet(timeStr: string, sheetID: string, tabID: strin
 
   const sheetId = tabID; // Replace with your sheet ID
   const url = `https://docs.google.com/spreadsheets/d/${spreadsheetId}/gviz/tq?tqx=out:json&tq=${encodeURIComponent(query)}&gid=${sheetId}`;
-  console.log("Url: ", url);
 
   try {
     const response = await fetch(url);
@@ -94,7 +93,6 @@ export async function fetchCurrentTime(timeStr: string, meridium: string) : Prom
   }
 
   if (rows.length === 0) {
-    console.log("Finding approximation");
 
     // * round to closest time in 15 minutes interval
     let roundedMinutes = Math.round(minutes / 15) * 15;
@@ -123,7 +121,6 @@ export async function fetchCurrentTime(timeStr: string, meridium: string) : Prom
  
   const randomRow = rows[Math.floor(Math.random() * rows.length)];
   
-  console.log("Randomrow: ", randomRow);
 
   /**
    * * rows: An array containing the rows of data.

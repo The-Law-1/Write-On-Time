@@ -1,6 +1,8 @@
 <template>
   <div class=" h-full bg-paper">
 
+    <Header />
+
     <div class=" flex justify-center items-center h-3/4">
       <div v-if="clockInfo" class=" w-2/3">
 
@@ -58,6 +60,7 @@ import { fetchCurrentTime } from '@/store/clockStore';
 import { ClockInfo } from '@/types/ClockInfo';
 import { onMounted, onUnmounted, ref, watch } from 'vue';
 import { ArrowPathIcon } from "@heroicons/vue/24/outline";
+import Header from '@/components/Header.vue';
 
 const clockInfo = ref<ClockInfo | null>(null);
 const splitSnippet = ref<string[]>([]);
