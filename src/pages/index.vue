@@ -140,14 +140,14 @@ const getTime = () => {
 
   if (hours === 0) {
     return {
-      currentTime: `00:${minutes < 10 ? '0' + minutes : minutes}`,
+      currentTime: `0:${minutes < 10 ? '0' + minutes : minutes}`,
       meridium
     };
   }
   else {
     hours = hours % 12 || 12;
     return {
-      currentTime: `${hours < 10 ? '0' + hours : hours}:${minutes < 10 ? '0' + minutes : minutes}`,
+      currentTime: `${hours}:${minutes < 10 ? '0' + minutes : minutes}`,
       meridium
     }
   }

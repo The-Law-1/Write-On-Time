@@ -7,9 +7,9 @@
           <a class=" hover:text-gray-700 underline underline-offset-2 decoration-dashed" href="https://www.authorclock.com/" target="_blank">Author Clock</a>
       </div>
  
-      <div class=" flex items-center ">
+      <div class=" flex items-center space-x-2 ">
         <!-- Talk to me: -->
-        <a class=" w-6 h-6 rounded-full bg-black" href="https://github.com/The-Law-1/Write-On-Time" target="_blank" rel="noreferrer">
+        <a class=" w-6 h-6 rounded-full bg-black border-black border " href="https://github.com/The-Law-1/Write-On-Time" target="_blank" rel="noreferrer">
           <img class="w-full h-full" :src="githubSVG" alt="githubIcon"/>
         </a>
         <!-- github -->

@@ -37,7 +37,7 @@ export async function fetchGoogleTime(timeStr: string) {
 async function fetchTimeFromSheet(timeStr: string, sheetID: string, tabID: string, meridium?: string, approximation?: string) {
   const spreadsheetId = sheetID;
   // ! would love to use header names here, but it doesn't seem to recognize them
-  let query = `select * where A = '${timeStr}'`;
+  let query = `select * where A = timeofday '${timeStr}:00'`;
 
   if (meridium) {
     query += ` and (G = 'any' or G = '${meridium}')`
@@ -105,7 +105,8 @@ export async function fetchCurrentTime(timeStr: string, meridium: string) : Prom
     }
  
     let hours = parseInt(splitTime[0]);
-    let hourString = hours.toString().padStart(2, "0");
+    // let hourString = hours.toString().padStart(2, "0");
+    let hourString = hours.toString();
 
     // if minutes were rounded up to the next hour, increment the hour
     if (roundedMinutes === 0) {
