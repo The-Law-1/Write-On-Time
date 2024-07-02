@@ -120,7 +120,6 @@ export async function fetchCurrentTime(timeStr: string, meridium: string) : Prom
   // select a random row
  
   const randomRow = rows[Math.floor(Math.random() * rows.length)];
-  
 
   /**
    * * rows: An array containing the rows of data.
